@@ -23,13 +23,18 @@ public:
 		thread = std::thread(&QuackPeriodicWorker::Loop, this);
 	}
 
-	//! Wake the worker and join its thread
-	void Stop() {
+	//! Wake the worker without joining it. Safe to call from the tick itself.
+	void RequestStop() {
 		{
 			std::lock_guard<std::mutex> guard(lock);
 			stopping = true;
 		}
 		cv.notify_one();
+	}
+
+	//! Wake the worker and join its thread
+	void Stop() {
+		RequestStop();
 		if (thread.joinable()) {
 			thread.join();
 		}
