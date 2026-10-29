@@ -72,7 +72,8 @@ public:
 			return message.Type() == MessageType::SEND_DATA_REQUEST &&
 			       message.Cast<SendDataRequestMessage>().TotalBatches().IsValid();
 		case CancelRequest::FETCH:
-			return message.Type() == MessageType::FETCH_REQUEST;
+			return message.Type() == MessageType::FETCH_REQUEST &&
+			       message.Cast<FetchRequestMessage>().QueryUUID() != hugeint_t(0);
 		default:
 			return false;
 		}
